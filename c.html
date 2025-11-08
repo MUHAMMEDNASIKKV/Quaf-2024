@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Data Management System - Advanced Filtering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .controls {
+            padding: 15px;
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 45px 14px 45px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #6c757d;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .clear-search:hover {
+            background: #c82333;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .clear-search.active {
+            display: flex;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .view-btn {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .view-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .refresh-btn, .export-btn, .filter-btn, .clear-filters-btn {
+            padding: 12px 18px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .export-btn {
+            background: #17a2b8;
+        }
+
+        .filter-btn {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .clear-filters-btn {
+            background: #dc3545;
+            display: none;
+        }
+
+        .clear-filters-btn.active {
+            display: flex;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .export-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .filter-btn:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .clear-filters-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Active Filters Chips */
+        .active-filters {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .active-filters.show {
+            display: flex;
+        }
+
+        .active-filters-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .filter-chip-remove {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .filter-chip-remove:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats {
+            padding: 15px;
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .stat-card .icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .stat-card h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            color: #6c757d;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 20px 15px;
+            min-height: 400px;
+        }
+
+        /* Enhanced Filter Panel */
+        .filter-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            display: none;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .filter-panel.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .filter-panel-header h3 {
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3em;
+        }
+
+        .filter-preset-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .filter-section-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-group select[multiple] {
+            min-height: 120px;
+        }
+
+        .filter-range {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-range input {
+            width: 100%;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .filter-apply, .filter-reset {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .filter-apply {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-apply:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .filter-reset {
+            background: #6c757d;
+            color: white;
+        }
+
+        .filter-reset:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        /* Similarity Mode */
+        .similarity-mode-banner {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .similarity-mode-banner.active {
+            display: flex;
+        }
+
+        .similarity-mode-info {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .similarity-mode-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .similarity-mode-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Cards View Styles */
+        .cards-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .student-card.reference {
+            border-color: #28a745;
+            border-width: 3px;
+        }
+
+        .student-card.reference::before {
+            content: '⭐ REFERENCE';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #28a745;
+            color: white;
+            padding: 5px;
+            text-align: center;
+            font-size: 0.75em;
+            font-weight: 700;
+            z-index: 1;
+        }
+
+        .similarity-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9em;
+            z-index: 2;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .student-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+
+        .student-card.reference .student-header {
+            padding-top: 30px;
+        }
+
+        .student-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .student-card.reference .student-number {
+            top: 35px;
+        }
+
+        .student-header h3 {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+            padding-right: 60px;
+        }
+
+        .student-header p {
+            font-size: 0.9em;
+            opacity: 0.95;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .student-body {
+            padding: 20px;
+        }
+
+        .data-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .data-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .data-item:hover {
+            background: #f0f2f5;
+            transform: translateX(3px);
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 120px;
+            font-size: 0.9em;
+        }
+
+        .data-value {
+            color: #6c757d;
+            flex: 1;
+            font-size: 0.9em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #333;
+        }
+
+        /* Table View Styles */
+        .table-view {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85em;
+            white-space: nowrap;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f8f9fa;
+            font-size: 0.85em;
+            border-right: 1px solid #f8f9fa;
+        }
+
+        tbody tr {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f0f2f5;
+            transform: scale(1.01);
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background: #e9ecef;
+        }
+
+        tbody tr.reference {
+            background: #d4edda !important;
+            border: 2px solid #28a745;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px 20px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6c757d;
+        }
+
+        .no-data .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .no-data h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .no-data p {
+            font-size: 1em;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .last-updated {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(to top, #f8f9fa, #ffffff);
+            color: #6c757d;
+            font-size: 0.85em;
+            border-top: 2px solid #e9ecef;
+            line-height: 1.6;
+        }
+
+        .last-updated strong {
+            color: #495057;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .header p {
+                font-size: 0.85em;
+            }
+
+            .status-indicator {
+                position: static;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .controls {
+                padding: 10px;
+            }
+
+            .controls-row {
+                flex-direction: column;
+            }
+
+            .view-toggle {
+                order: 1;
+            }
+
+            .action-buttons {
+                order: 2;
+                width: 100%;
+            }
+
+            .refresh-btn, .export-btn, .filter-btn, .clear-filters-btn {
+                flex: 1;
+                padding: 12px 10px;
+                font-size: 14px;
+            }
+
+            .cards-view {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-card h3 {
+                font-size: 1.8em;
+            }
+
+            .filter-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .similarity-mode-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Smooth Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>Live</span>
+            </div>
+            <h1>
+         
+                <span>Quaf Career Development 2024-26</span>
+            </h1>
+            
+        </div>
+
+        <div class="similarity-mode-banner" id="similarityBanner">
+            <div class="similarity-mode-info">
+                🔍 <strong>Similarity Mode Active:</strong> Comparing with <span id="referenceStudentName"></span>
+            </div>
+            <button class="similarity-mode-close" onclick="exitSimilarityMode()">Exit Comparison</button>
+        </div>
+
+        <div class="controls">
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search by name, admission number, or any data...">
+                    <button class="clear-search" id="clearSearch">✕</button>
+                </div>
+            </div>
+            <div class="controls-row">
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('cards')">
+                        <span>📋</span>
+                        <span>Cards</span>
+                    </button>
+                    <button class="view-btn" onclick="switchView('table')">
+                        <span>📊</span>
+                        <span>Table</span>
+                    </button>
+                </div>
+                <div class="action-buttons">
+                    <button class="filter-btn" onclick="toggleFilter()">
+                        <span>🔍</span>
+                        <span>Filters</span>
+                    </button>
+                    <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">
+                        <span>✕</span>
+                        <span>Clear</span>
+                    </button>
+                    <button class="export-btn" onclick="exportData()" data-tooltip="Export to CSV">
+                        <span>📥</span>
+                        <span>Export</span>
+                    </button>
+                    <button class="refresh-btn" onclick="loadData()">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="active-filters" id="activeFilters">
+            <span class="active-filters-label">Active Filters:</span>
+        </div>
+
+        <div class="filter-panel" id="filterPanel">
+            <div class="filter-panel-header">
+                <h3><span>🎯</span> Advanced Filtering System</h3>
+            </div>
+
+            <div class="filter-preset-buttons">
+                <button class="preset-btn" onclick="applyPreset('dailyReaders')">📰 Daily Newspaper Readers</button>
+                <button class="preset-btn" onclick="applyPreset('religiousActive')">🕌 Religiously Active</button>
+                <button class="preset-btn" onclick="applyPreset('avid Readers')">📚 Avid Readers (100+ pages)</button>
+                <button class="preset-btn" onclick="applyPreset('needSupport')">🆘 Need Academic Support</button>
+            </div>
+
+            <div class="filter-sections">
+                <!-- Favorite Languages Filter -->
+                <div class="filter-section">
+                    <div class="filter-section-title">📚 Favorite Languages</div>
+                    <div class="filter-group">
+                        <label>Select Languages (Hold Ctrl/Cmd for multiple)</label>
+                        <select id="filterFavLanguages" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Difficult Languages Filter -->
+                <div class="filter-section">
+                    <div class="filter-section-title">😓 Difficult Languages</div>
+                    <div class="filter-group">
+                        <label>Select Languages</label>
+                        <select id="filterDiffLanguages" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Favorite Subject Filter -->
+                <div class="filter-section">
+                    <div class="filter-section-title">⭐ Favorite Subject</div>
+                    <div class="filter-group">
+                        <label>Select Subjects</label>
+                        <select id="filterFavSubject" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Highest Marks Subjects -->
+                <div class="filter-section">
+                    <div class="filter-section-title">🏆 Highest Marks In</div>
+                    <div class="filter-group">
+                        <label>Select Subjects</label>
+                        <select id="filterHighMarks" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Lowest Marks Subjects -->
+                <div class="filter-section">
+                    <div class="filter-section-title">📉 Lowest Marks In</div>
+                    <div class="filter-group">
+                        <label>Select Subjects</label>
+                        <select id="filterLowMarks" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Activities Filter -->
+                <div class="filter-section">
+                    <div class="filter-section-title">🎭 Activities</div>
+                    <div class="filter-group">
+                        <label>Select Activities</label>
+                        <select id="filterActivities" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Reading Habits -->
+                <div class="filter-section">
+                    <div class="filter-section-title">📖 Reading Habits</div>
+                    <div class="filter-group">
+                        <label>Pages Per Month</label>
+                        <div class="filter-range">
+                            <input type="number" id="filterPagesMin" placeholder="Min" min="0">
+                            <span>to</span>
+                            <input type="number" id="filterPagesMax" placeholder="Max" min="0">
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Daily Newspaper</label>
+                        <select id="filterNewspaper">
+                            <option value="">All</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Interests Filter -->
+                <div class="filter-section">
+                    <div class="filter-section-title">💡 Interests</div>
+                    <div class="filter-group">
+                        <label>Select Interest Areas</label>
+                        <select id="filterInterests" multiple></select>
+                    </div>
+                </div>
+
+                <!-- Religious Practices -->
+                <div class="filter-section">
+                    <div class="filter-section-title">🕌 Religious Practices</div>
+                    <div class="filter-group">
+                        <label>Zuha Prayer</label>
+                        <select id="filterZuha">
+                            <option value="">All</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tahajjud Prayer</label>
+                        <select id="filterTahajjud">
+                            <option value="">All</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Regular Wudhu</label>
+                        <select id="filterWudhu">
+                            <option value="">All</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Quran Reading (10 pages daily)</label>
+                        <select id="filterQuran">
+                            <option value="">All</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Following Sunnah</label>
+                        <select id="filterSunnah">
+                            <option value="">All</option>
+                            <option value="YES">Yes</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="filter-apply" onclick="applyFilters()">Apply Filters</button>
+                <button class="filter-reset" onclick="resetFilters()">Reset All</button>
+            </div>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="icon">👥</div>
+                <h3 id="totalStudents">0</h3>
+                <p>Total Students</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📝</div>
+                <h3 id="dataFields">39</h3>
+                <p>Data Fields</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🕒</div>
+                <h3 id="lastRefresh">--</h3>
+                <p>Last Refresh</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📊</div>
+                <h3 id="displayedCount">0</h3>
+                <p>Displayed</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔍</div>
+                <h3 id="activeFilterCount">0</h3>
+                <p>Active Filters</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading student data from Google Sheets...</p>
+            </div>
+            <div id="cardsView" class="cards-view hidden"></div>
+            <div id="tableView" class="table-view hidden"></div>
+            <div id="noData" class="no-data hidden">
+                <div class="icon">📭</div>
+                <h3>No data found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+        </div>
+
+        <div class="last-updated" id="lastUpdated">
+            <strong>Status:</strong> Waiting for data...
+        </div>
+    </div>
+
+    <script>
+        // Your Google Sheets CSV URL
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZzKH8BIfh5edCPijtKSbRrUQ4b2azQmVA_gMkoyQH9n0GYl0OZmZjr95ctPjE2AesdxHNGAxBzH63/pub?gid=0&single=true&output=csv';
+        
+        let allStudents = [];
+        let filteredStudents = [];
+        let currentView = 'cards';
+        let similarityMode = false;
+        let referenceStudent = null;
+        let activeFilters = {};
+
+        // Column structure
+        const columnStructure = {
+            basic: [
+                { index: 0, label: 'NO', key: 'no' },
+                { index: 1, label: 'AD:NO', key: 'adNo' },
+                { index: 2, label: 'NAME', key: 'name' }
+            ],
+            favLanguages: [
+                { index: 3, label: '1st', key: 'favLang1' },
+                { index: 4, label: '2nd', key: 'favLang2' },
+                { index: 5, label: '3rd', key: 'favLang3' },
+                { index: 6, label: '4th', key: 'favLang4' },
+                { index: 7, label: '5th', key: 'favLang5' }
+            ],
+            difficultLanguages: [
+                { index: 8, label: '1st', key: 'diffLang1' },
+                { index: 9, label: '2nd', key: 'diffLang2' },
+                { index: 10, label: '3rd', key: 'diffLang3' },
+                { index: 11, label: '4th', key: 'diffLang4' },
+                { index: 12, label: '5th', key: 'diffLang5' }
+            ],
+            favSubject: [
+                { index: 13, label: 'ഏറ്റവും ഇഷ്ടപ്പെട്ട വിഷയം', key: 'favSubject' }
+            ],
+            highestMarks: [
+                { index: 14, label: '1st', key: 'highMark1' },
+                { index: 15, label: '2nd', key: 'highMark2' },
+                { index: 16, label: '3rd', key: 'highMark3' },
+                { index: 17, label: '4th', key: 'highMark4' },
+                { index: 18, label: '5th', key: 'highMark5' }
+            ],
+            lowestMarks: [
+                { index: 19, label: '1st', key: 'lowMark1' },
+                { index: 20, label: '2nd', key: 'lowMark2' },
+                { index: 21, label: '3rd', key: 'lowMark3' },
+                { index: 22, label: '4th', key: 'lowMark4' },
+                { index: 23, label: '5th', key: 'lowMark5' }
+            ],
+            activities: [
+                { index: 24, label: '1st', key: 'activity1' },
+                { index: 25, label: '2nd', key: 'activity2' },
+                { index: 26, label: '3rd', key: 'activity3' },
+                { index: 27, label: '4th', key: 'activity4' },
+                { index: 28, label: '5th', key: 'activity5' }
+            ],
+            reading: [
+                { index: 29, label: 'ഒരു മാസം കൊണ്ട് ഏകദേശം എത്ര പേജ് പുസ്തകം വായിക്കാറുണ്ട്', key: 'readingPages' },
+                { index: 30, label: 'എന്നും പത്രം വായിക്കാറുണ്ടോ', key: 'newspaper' }
+            ],
+            interests: [
+                { index: 31, label: '1st', key: 'interest1' },
+                { index: 32, label: '2nd', key: 'interest2' },
+                { index: 33, label: '3rd', key: 'interest3' }
+            ],
+            religious: [
+                { index: 34, label: 'എന്നും ളുഹാ നിസ്കരിക്കാറുണ്ടോ', key: 'zuha' },
+                { index: 35, label: 'എന്നും തഹജ്ജുദ് നിസ്കരിക്കാറുണ്ടോ', key: 'tahajjud' },
+                { index: 36, label: 'വുളൂഅ് പതിവാക്കാറുണ്ടോ', key: 'wudhu' },
+                { index: 37, label: 'എന്നും ഖുർആൻ 10 പേജ് ഓതാറുണ്ടോ', key: 'quran' },
+                { index: 38, label: 'പരമാവധി സുന്നത്തുകൾ നിർവഹിക്കാൻ ശ്രമിക്കാറുണ്ടോ', key: 'sunnah' }
+            ]
+        };
+
+        // Parse CSV
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const result = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+                
+                const values = [];
+                let currentValue = '';
+                let insideQuotes = false;
+                
+                for (let j = 0; j < lines[i].length; j++) {
+                    const char = lines[i][j];
+                    
+                    if (char === '"') {
+                        insideQuotes = !insideQuotes;
+                    } else if (char === ',' && !insideQuotes) {
+                        values.push(currentValue.trim());
+                        currentValue = '';
+                    } else {
+                        currentValue += char;
+                    }
+                }
+                values.push(currentValue.trim());
+                
+                const student = {};
+                values.forEach((value, index) => {
+                    student[`col${index}`] = value.replace(/^"|"$/g, '');
+                });
+                
+                result.push(student);
+            }
+            
+            return result;
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('cardsView').classList.add('hidden');
+                document.getElementById('tableView').classList.add('hidden');
+                document.getElementById('noData').classList.add('hidden');
+
+                const response = await fetch(SHEET_URL + '&t=' + Date.now());
+                const csvText = await response.text();
+                allStudents = parseCSV(csvText);
+                filteredStudents = [...allStudents];
+
+                populateFilterOptions();
+                updateStats();
+                renderView();
+                
+                document.getElementById('loading').classList.add('hidden');
+                showToast('✅ Data loaded successfully!');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('noData').classList.remove('hidden');
+                showToast('❌ Error loading data. Please try again.');
+            }
+        }
+
+        // Populate all filter options
+        function populateFilterOptions() {
+            const filters = {
+                favLanguages: new Set(),
+                diffLanguages: new Set(),
+                favSubject: new Set(),
+                highMarks: new Set(),
+                lowMarks: new Set(),
+                activities: new Set(),
+                interests: new Set()
+            };
+
+            allStudents.forEach(student => {
+                // Favorite Languages
+                columnStructure.favLanguages.forEach(col => {
+                    if (student[`col${col.index}`]) filters.favLanguages.add(student[`col${col.index}`]);
+                });
+
+                // Difficult Languages
+                columnStructure.difficultLanguages.forEach(col => {
+                    if (student[`col${col.index}`]) filters.diffLanguages.add(student[`col${col.index}`]);
+                });
+
+                // Favorite Subject
+                if (student.col13) filters.favSubject.add(student.col13);
+
+                // High Marks
+                columnStructure.highestMarks.forEach(col => {
+                    if (student[`col${col.index}`]) filters.highMarks.add(student[`col${col.index}`]);
+                });
+
+                // Low Marks
+                columnStructure.lowestMarks.forEach(col => {
+                    if (student[`col${col.index}`]) filters.lowMarks.add(student[`col${col.index}`]);
+                });
+
+                // Activities
+                columnStructure.activities.forEach(col => {
+                    if (student[`col${col.index}`]) filters.activities.add(student[`col${col.index}`]);
+                });
+
+                // Interests
+                columnStructure.interests.forEach(col => {
+                    if (student[`col${col.index}`]) filters.interests.add(student[`col${col.index}`]);
+                });
+            });
+
+            // Populate dropdowns
+            populateSelect('filterFavLanguages', filters.favLanguages);
+            populateSelect('filterDiffLanguages', filters.diffLanguages);
+            populateSelect('filterFavSubject', filters.favSubject);
+            populateSelect('filterHighMarks', filters.highMarks);
+            populateSelect('filterLowMarks', filters.lowMarks);
+            populateSelect('filterActivities', filters.activities);
+            populateSelect('filterInterests', filters.interests);
+        }
+
+        function populateSelect(id, items) {
+            const select = document.getElementById(id);
+            select.innerHTML = '';
+            Array.from(items).sort().forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                select.appendChild(option);
+            });
+        }
+
+        // Calculate similarity between two students
+        function calculateSimilarity(student1, student2) {
+            let matches = 0;
+            let totalFields = 0;
+
+            // Compare all relevant fields (excluding NO, AD:NO, NAME)
+            for (let i = 3; i <= 38; i++) {
+                const val1 = student1[`col${i}`]?.toUpperCase().trim();
+                const val2 = student2[`col${i}`]?.toUpperCase().trim();
+                
+                if (val1 && val2) {
+                    totalFields++;
+                    if (val1 === val2) {
+                        matches++;
+                    }
+                }
+            }
+
+            return totalFields > 0 ? Math.round((matches / totalFields) * 100) : 0;
+        }
+
+        // Find similar students
+        function findSimilarStudents(student) {
+            similarityMode = true;
+            referenceStudent = student;
+            
+            document.getElementById('similarityBanner').classList.add('active');
+            document.getElementById('referenceStudentName').textContent = student.col2 || 'Unknown';
+
+            // Calculate similarity for all students
+            const studentsWithSimilarity = allStudents.map(s => ({
+                ...s,
+                similarity: s === student ? 100 : calculateSimilarity(student, s)
+            }));
+
+            // Sort by similarity
+            filteredStudents = studentsWithSimilarity.sort((a, b) => b.similarity - a.similarity);
+            
+            updateStats();
+            renderView();
+            showToast(`🔍 Finding students similar to ${student.col2}`);
+        }
+
+        // Exit similarity mode
+        function exitSimilarityMode() {
+            similarityMode = false;
+            referenceStudent = null;
+            document.getElementById('similarityBanner').classList.remove('active');
+            
+            filteredStudents = [...allStudents];
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const filters = getActiveFilters();
+            activeFilters = filters;
+
+            filteredStudents = allStudents.filter(student => {
+                // Favorite Languages
+                if (filters.favLanguages.length > 0) {
+                    const studentLangs = columnStructure.favLanguages
+                        .map(col => student[`col${col.index}`])
+                        .filter(Boolean);
+                    if (!studentLangs.some(lang => filters.favLanguages.includes(lang))) {
+                        return false;
+                    }
+                }
+
+                // Difficult Languages
+                if (filters.diffLanguages.length > 0) {
+                    const studentLangs = columnStructure.difficultLanguages
+                        .map(col => student[`col${col.index}`])
+                        .filter(Boolean);
+                    if (!studentLangs.some(lang => filters.diffLanguages.includes(lang))) {
+                        return false;
+                    }
+                }
+
+                // Favorite Subject
+                if (filters.favSubject.length > 0) {
+                    if (!filters.favSubject.includes(student.col13)) {
+                        return false;
+                    }
+                }
+
+                // High Marks
+                if (filters.highMarks.length > 0) {
+                    const studentSubjects = columnStructure.highestMarks
+                        .map(col => student[`col${col.index}`])
+                        .filter(Boolean);
+                    if (!studentSubjects.some(subj => filters.highMarks.includes(subj))) {
+                        return false;
+                    }
+                }
+
+                // Low Marks
+                if (filters.lowMarks.length > 0) {
+                    const studentSubjects = columnStructure.lowestMarks
+                        .map(col => student[`col${col.index}`])
+                        .filter(Boolean);
+                    if (!studentSubjects.some(subj => filters.lowMarks.includes(subj))) {
+                        return false;
+                    }
+                }
+
+                // Activities
+                if (filters.activities.length > 0) {
+                    const studentActivities = columnStructure.activities
+                        .map(col => student[`col${col.index}`])
+                        .filter(Boolean);
+                    if (!studentActivities.some(act => filters.activities.includes(act))) {
+                        return false;
+                    }
+                }
+
+                // Reading Pages Range
+                if (filters.pagesMin !== null || filters.pagesMax !== null) {
+                    const pages = parseInt(student.col29);
+                    if (!isNaN(pages)) {
+                        if (filters.pagesMin !== null && pages < filters.pagesMin) return false;
+                        if (filters.pagesMax !== null && pages > filters.pagesMax) return false;
+                    }
+                }
+
+                // Newspaper
+                if (filters.newspaper && student.col30?.toUpperCase() !== filters.newspaper) {
+                    return false;
+                }
+
+                // Interests
+                if (filters.interests.length > 0) {
+                    const studentInterests = columnStructure.interests
+                        .map(col => student[`col${col.index}`])
+                        .filter(Boolean);
+                    if (!studentInterests.some(int => filters.interests.includes(int))) {
+                        return false;
+                    }
+                }
+
+                // Religious practices
+                if (filters.zuha && student.col34?.toUpperCase() !== filters.zuha) return false;
+                if (filters.tahajjud && student.col35?.toUpperCase() !== filters.tahajjud) return false;
+                if (filters.wudhu && student.col36?.toUpperCase() !== filters.wudhu) return false;
+                if (filters.quran && student.col37?.toUpperCase() !== filters.quran) return false;
+                if (filters.sunnah && student.col38?.toUpperCase() !== filters.sunnah) return false;
+
+                return true;
+            });
+
+            updateFilterChips();
+            updateStats();
+            renderView();
+            toggleFilter();
+            
+            const filterCount = Object.values(filters).filter(v => 
+                (Array.isArray(v) && v.length > 0) || (typeof v === 'string' && v) || (typeof v === 'number' && v !== null)
+            ).length;
+            
+            showToast(`✅ ${filterCount} filter(s) applied! ${filteredStudents.length} students found`);
+        }
+
+        // Get active filters from form
+        function getActiveFilters() {
+            return {
+                favLanguages: Array.from(document.getElementById('filterFavLanguages').selectedOptions).map(o => o.value),
+                diffLanguages: Array.from(document.getElementById('filterDiffLanguages').selectedOptions).map(o => o.value),
+                favSubject: Array.from(document.getElementById('filterFavSubject').selectedOptions).map(o => o.value),
+                highMarks: Array.from(document.getElementById('filterHighMarks').selectedOptions).map(o => o.value),
+                lowMarks: Array.from(document.getElementById('filterLowMarks').selectedOptions).map(o => o.value),
+                activities: Array.from(document.getElementById('filterActivities').selectedOptions).map(o => o.value),
+                pagesMin: parseInt(document.getElementById('filterPagesMin').value) || null,
+                pagesMax: parseInt(document.getElementById('filterPagesMax').value) || null,
+                newspaper: document.getElementById('filterNewspaper').value,
+                interests: Array.from(document.getElementById('filterInterests').selectedOptions).map(o => o.value),
+                zuha: document.getElementById('filterZuha').value,
+                tahajjud: document.getElementById('filterTahajjud').value,
+                wudhu: document.getElementById('filterWudhu').value,
+                quran: document.getElementById('filterQuran').value,
+                sunnah: document.getElementById('filterSunnah').value
+            };
+        }
+
+        // Update filter chips
+        function updateFilterChips() {
+            const container = document.getElementById('activeFilters');
+            const filters = activeFilters;
+            
+            // Clear existing chips except label
+            const chips = container.querySelectorAll('.filter-chip');
+            chips.forEach(chip => chip.remove());
+
+            let chipCount = 0;
+
+            // Add chips for each active filter
+            Object.entries(filters).forEach(([key, value]) => {
+                if (Array.isArray(value) && value.length > 0) {
+                    value.forEach(v => {
+                        addFilterChip(container, key, v);
+                        chipCount++;
+                    });
+                } else if (typeof value === 'string' && value) {
+                    addFilterChip(container, key, value);
+                    chipCount++;
+                } else if (typeof value === 'number' && value !== null) {
+                    addFilterChip(container, key, value.toString());
+                    chipCount++;
+                }
+            });
+
+            if (chipCount > 0) {
+                container.classList.add('show');
+                document.getElementById('clearFiltersBtn').classList.add('active');
+            } else {
+                container.classList.remove('show');
+                document.getElementById('clearFiltersBtn').classList.remove('active');
+            }
+
+            document.getElementById('activeFilterCount').textContent = chipCount;
+        }
+
+        function addFilterChip(container, filterKey, value) {
+            const chip = document.createElement('div');
+            chip.className = 'filter-chip';
+            
+            const label = getFilterLabel(filterKey);
+            chip.innerHTML = `
+                <span>${label}: ${value}</span>
+                <button class="filter-chip-remove" onclick="removeFilter('${filterKey}', '${value}')">✕</button>
+            `;
+            
+            container.appendChild(chip);
+        }
+
+        function getFilterLabel(key) {
+            const labels = {
+                favLanguages: '📚 Fav Lang',
+                diffLanguages: '😓 Diff Lang',
+                favSubject: '⭐ Fav Subject',
+                highMarks: '🏆 High Marks',
+                lowMarks: '📉 Low Marks',
+                activities: '🎭 Activity',
+                pagesMin: '📖 Min Pages',
+                pagesMax: '📖 Max Pages',
+                newspaper: '📰 Newspaper',
+                interests: '💡 Interest',
+                zuha: '🕌 Zuha',
+                tahajjud: '🕌 Tahajjud',
+                wudhu: '🕌 Wudhu',
+                quran: '🕌 Quran',
+                sunnah: '🕌 Sunnah'
+            };
+            return labels[key] || key;
+        }
+
+        function removeFilter(filterKey, value) {
+            // Update form
+            if (filterKey === 'newspaper' || filterKey === 'zuha' || filterKey === 'tahajjud' || 
+                filterKey === 'wudhu' || filterKey === 'quran' || filterKey === 'sunnah') {
+                const select = document.getElementById(`filter${filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}`);
+                select.value = '';
+            } else if (filterKey === 'pagesMin' || filterKey === 'pagesMax') {
+                document.getElementById(`filter${filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}`).value = '';
+            } else {
+                const selectId = `filter${filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}`;
+                const select = document.getElementById(selectId);
+                Array.from(select.options).forEach(option => {
+                    if (option.value === value) {
+                        option.selected = false;
+                    }
+                });
+            }
+
+            applyFilters();
+        }
+
+        function clearAllFilters() {
+            resetFilters();
+            showToast('✅ All filters cleared!');
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterFavLanguages').selectedIndex = -1;
+            document.getElementById('filterDiffLanguages').selectedIndex = -1;
+            document.getElementById('filterFavSubject').selectedIndex = -1;
+            document.getElementById('filterHighMarks').selectedIndex = -1;
+            document.getElementById('filterLowMarks').selectedIndex = -1;
+            document.getElementById('filterActivities').selectedIndex = -1;
+            document.getElementById('filterPagesMin').value = '';
+            document.getElementById('filterPagesMax').value = '';
+            document.getElementById('filterNewspaper').value = '';
+            document.getElementById('filterInterests').selectedIndex = -1;
+            document.getElementById('filterZuha').value = '';
+            document.getElementById('filterTahajjud').value = '';
+            document.getElementById('filterWudhu').value = '';
+            document.getElementById('filterQuran').value = '';
+            document.getElementById('filterSunnah').value = '';
+
+            activeFilters = {};
+            filteredStudents = [...allStudents];
+            updateFilterChips();
+            updateStats();
+            renderView();
+        }
+
+        // Apply preset filters
+        function applyPreset(preset) {
+            resetFilters();
+
+            switch(preset) {
+                case 'dailyReaders':
+                    document.getElementById('filterNewspaper').value = 'YES';
+                    break;
+                case 'religiousActive':
+                    document.getElementById('filterZuha').value = 'YES';
+                    document.getElementById('filterTahajjud').value = 'YES';
+                    document.getElementById('filterQuran').value = 'YES';
+                    break;
+                case 'avidReaders':
+                    document.getElementById('filterPagesMin').value = '100';
+                    break;
+                case 'needSupport':
+                    // This would need low marks subjects selected
+                    // For demo, just show message
+                    showToast('💡 Please select specific subjects in "Lowest Marks" section');
+                    toggleFilter();
+                    return;
+            }
+
+            applyFilters();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalStudents').textContent = allStudents.length;
+            document.getElementById('displayedCount').textContent = filteredStudents.length;
+            
+            const now = new Date();
+            document.getElementById('lastRefresh').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            
+            const updateText = `
+                <strong>Last updated:</strong> ${now.toLocaleString()} | 
+                <strong>Data Source:</strong> Google Sheets (Live) | 
+                <strong>Total Records:</strong> ${allStudents.length} | 
+                <strong>Displayed:</strong> ${filteredStudents.length}
+                ${similarityMode ? ' | <strong>Mode:</strong> Similarity Comparison' : ''}
+            `;
+            document.getElementById('lastUpdated').innerHTML = updateText;
+        }
+
+        // Render cards view
+        function renderCards(students) {
+            const container = document.getElementById('cardsView');
+            container.innerHTML = '';
+
+            if (students.length === 0) {
+                document.getElementById('noData').classList.remove('hidden');
+                return;
+            }
+
+            students.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                
+                if (similarityMode && student === referenceStudent) {
+                    card.classList.add('reference');
+                }
+
+                card.onclick = () => findSimilarStudents(student);
+                
+                let html = '';
+
+                // Add similarity badge if in similarity mode
+                if (similarityMode && student !== referenceStudent && student.similarity !== undefined) {
+                    html += `<div class="similarity-badge">🎯 ${student.similarity}% Match</div>`;
+                }
+
+                html += `
+                    <div class="student-header">
+                        <div class="student-number">#${student.col0}</div>
+                        <h3>${student.col2 || 'N/A'}</h3>
+                        <p>
+                            <span>🎫 ${student.col1}</span>
+                        </p>
+                    </div>
+                    <div class="student-body">
+                `;
+
+                // Favorite Languages Section
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">📚 ഏറ്റവും ഇഷ്ടപ്പെട്ട ഭാഷകൾ</div>
+                        <div class="data-grid">
+                `;
+                columnStructure.favLanguages.forEach(col => {
+                    if (student[`col${col.index}`]) {
+                        html += `<span class="badge badge-info">${col.label}: ${student[`col${col.index}`]}</span>`;
+                    }
+                });
+                html += `</div></div>`;
+
+                // Difficult Languages Section
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">😓 ഏറ്റവും പ്രയാസമുള്ള ഭാഷകൾ</div>
+                        <div class="data-grid">
+                `;
+                columnStructure.difficultLanguages.forEach(col => {
+                    if (student[`col${col.index}`]) {
+                        html += `<span class="badge badge-warning">${col.label}: ${student[`col${col.index}`]}</span>`;
+                    }
+                });
+                html += `</div></div>`;
+
+                // Favorite Subject
+                if (student.col13) {
+                    html += `
+                        <div class="data-section">
+                            <div class="section-title">⭐ ഏറ്റവും ഇഷ്ടപ്പെട്ട വിഷയം</div>
+                            <span class="badge">${student.col13}</span>
+                        </div>
+                    `;
+                }
+
+                // Highest Marks Subjects
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">🏆 ഏറ്റവും കൂടുതൽ മാർക്ക്‌</div>
+                        <div class="data-grid">
+                `;
+                columnStructure.highestMarks.forEach(col => {
+                    if (student[`col${col.index}`]) {
+                        html += `<span class="badge badge-success">${col.label}: ${student[`col${col.index}`]}</span>`;
+                    }
+                });
+                html += `</div></div>`;
+
+                // Lowest Marks Subjects
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">📉 ഏറ്റവും കുറഞ്ഞ മാർക്ക്‌</div>
+                        <div class="data-grid">
+                `;
+                columnStructure.lowestMarks.forEach(col => {
+                    if (student[`col${col.index}`]) {
+                        html += `<span class="badge badge-danger">${col.label}: ${student[`col${col.index}`]}</span>`;
+                    }
+                });
+                html += `</div></div>`;
+
+                // Activities
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">🎭 ഏറ്റവും കൂടുതൽ പങ്കെടുത്ത പരിപാടികൾ</div>
+                        <div class="data-grid">
+                `;
+                columnStructure.activities.forEach(col => {
+                    if (student[`col${col.index}`]) {
+                        html += `<span class="badge">${col.label}: ${student[`col${col.index}`]}</span>`;
+                    }
+                });
+                html += `</div></div>`;
+
+                // Reading Habits
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">📖 വായനാശീലം</div>
+                        <div class="data-item">
+                            <span class="data-label">Pages/Month:</span>
+                            <span class="data-value">${student.col29 || 'N/A'}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Daily Newspaper:</span>
+                            <span class="data-value">
+                                <span class="badge ${student.col30?.toUpperCase() === 'YES' ? 'badge-success' : 'badge-danger'}">${student.col30 || 'N/A'}</span>
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                // Interests
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">💡 ഏറ്റവും കൂടുതൽ താല്പര്യമുള്ള മേഖല</div>
+                        <div class="data-grid">
+                `;
+                columnStructure.interests.forEach(col => {
+                    if (student[`col${col.index}`]) {
+                        html += `<span class="badge badge-info">${col.label}: ${student[`col${col.index}`]}</span>`;
+                    }
+                });
+                html += `</div></div>`;
+
+                // Religious Practices
+                html += `
+                    <div class="data-section">
+                        <div class="section-title">🕌 മതപരമായ പ്രവർത്തനങ്ങൾ</div>
+                `;
+                const religiousLabels = ['Zuha', 'Tahajjud', 'Wudhu', 'Quran (10 pages)', 'Sunnah'];
+                columnStructure.religious.forEach((col, idx) => {
+                    if (student[`col${col.index}`]) {
+                        const value = student[`col${col.index}`];
+                        const badgeClass = value.toUpperCase() === 'YES' ? 'badge-success' : 'badge-danger';
+                        html += `
+                            <div class="data-item">
+                                <span class="data-label">${religiousLabels[idx]}:</span>
+                                <span class="badge ${badgeClass}">${value}</span>
+                            </div>
+                        `;
+                    }
+                });
+                html += `</div>`;
+
+                html += `</div>`; // Close student-body
+
+                card.innerHTML = html;
+                container.appendChild(card);
+            });
+
+            container.classList.remove('hidden');
+        }
+
+        // Render table view
+        function renderTable(students) {
+            const container = document.getElementById('tableView');
+            
+            if (students.length === 0) {
+                document.getElementById('noData').classList.remove('hidden');
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            ${similarityMode ? '<th>Match %</th>' : ''}
+                            <th>NO</th>
+                            <th>AD:NO</th>
+                            <th>NAME</th>
+                            <th colspan="5">ഏറ്റവും ഇഷ്ടപ്പെട്ട ഭാഷകൾ</th>
+                            <th colspan="5">ഏറ്റവും പ്രയാസമുള്ള ഭാഷകൾ</th>
+                            <th>ഇഷ്ടപ്പെട്ട വിഷയം</th>
+                            <th colspan="5">കൂടുതൽ മാർക്ക്‌</th>
+                            <th colspan="5">കുറഞ്ഞ മാർക്ക്‌</th>
+                            <th colspan="5">പരിപാടികൾ</th>
+                            <th>Pages/Month</th>
+                            <th>Newspaper</th>
+                            <th colspan="3">താല്പര്യം</th>
+                            <th>ളുഹാ</th>
+                            <th>തഹജ്ജുദ്</th>
+                            <th>വുളൂअ്</th>
+                            <th>ഖുർആൻ</th>
+                            <th>സുന്നത്ത്</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            students.forEach(student => {
+                const isReference = similarityMode && student === referenceStudent;
+                html += `<tr class="${isReference ? 'reference' : ''}" onclick="findSimilarStudents(allStudents[${allStudents.indexOf(student)}])" style="cursor: pointer;">`;
+                
+                if (similarityMode) {
+                    html += `<td><strong>${student.similarity !== undefined ? student.similarity + '%' : '100%'}</strong></td>`;
+                }
+
+                for (let i = 0; i <= 38; i++) {
+                    const value = student[`col${i}`] || '';
+                    html += `<td>${value}</td>`;
+                }
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+        }
+
+        // Switch between views
+        function switchView(view) {
+            currentView = view;
+            
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.closest('.view-btn').classList.add('active');
+            renderView();
+        }
+
+        // Render current view
+        function renderView() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let displayStudents = [...filteredStudents];
+
+            if (searchTerm) {
+                displayStudents = displayStudents.filter(student => {
+                    return Object.values(student).some(value => 
+                        value.toString().toLowerCase().includes(searchTerm)
+                    );
+                });
+            }
+
+            document.getElementById('cardsView').classList.add('hidden');
+            document.getElementById('tableView').classList.add('hidden');
+            document.getElementById('noData').classList.add('hidden');
+
+            if (currentView === 'cards') {
+                renderCards(displayStudents);
+            } else {
+                renderTable(displayStudents);
+            }
+
+            document.getElementById('displayedCount').textContent = displayStudents.length;
+        }
+
+        // Toggle filter panel
+        function toggleFilter() {
+            const panel = document.getElementById('filterPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Export data to CSV
+        function exportData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let exportStudents = [...filteredStudents];
+
+            if (searchTerm) {
+                exportStudents = exportStudents.filter(student => {
+                    return Object.values(student).some(value => 
+                        value.toString().toLowerCase().includes(searchTerm)
+                    );
+                });
+            }
+
+            if (exportStudents.length === 0) {
+                showToast('❌ No data to export!');
+                return;
+            }
+
+            let csv = similarityMode ? 'Similarity %,' : '';
+            csv += 'NO,AD:NO,NAME,Fav Lang 1,Fav Lang 2,Fav Lang 3,Fav Lang 4,Fav Lang 5,';
+            csv += 'Diff Lang 1,Diff Lang 2,Diff Lang 3,Diff Lang 4,Diff Lang 5,';
+            csv += 'Fav Subject,High Mark 1,High Mark 2,High Mark 3,High Mark 4,High Mark 5,';
+            csv += 'Low Mark 1,Low Mark 2,Low Mark 3,Low Mark 4,Low Mark 5,';
+            csv += 'Activity 1,Activity 2,Activity 3,Activity 4,Activity 5,';
+            csv += 'Pages/Month,Newspaper,Interest 1,Interest 2,Interest 3,';
+            csv += 'Zuha,Tahajjud,Wudhu,Quran,Sunnah\n';
+
+            exportStudents.forEach(student => {
+                if (similarityMode) {
+                    csv += `${student.similarity || 100},`;
+                }
+                for (let i = 0; i <= 38; i++) {
+                    const value = student[`col${i}`] || '';
+                    csv += `"${value}",`;
+                }
+                csv = csv.slice(0, -1) + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            const timestamp = new Date().toISOString().slice(0, 10);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `student_data_${similarityMode ? 'similarity_' : ''}${timestamp}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast(`✅ Exported ${exportStudents.length} records!`);
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #333;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                font-size: 14px;
+                font-weight: 600;
+                animation: slideUp 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideDown 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+
+        searchInput.addEventListener('input', (e) => {
+            if (e.target.value.length > 0) {
+                clearSearch.classList.add('active');
+            } else {
+                clearSearch.classList.remove('active');
+            }
+            renderView();
+        });
+
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearch.classList.remove('active');
+            renderView();
+            searchInput.focus();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                loadData();
+            }
+            
+            if (e.key === 'Escape') {
+                if (searchInput.value) {
+                    searchInput.value = '';
+                    clearSearch.classList.remove('active');
+                    renderView();
+                } else if (document.getElementById('filterPanel').classList.contains('active')) {
+                    toggleFilter();
+                } else if (similarityMode) {
+                    exitSimilarityMode();
+                }
+            }
+        });
+
+        // Auto-refresh every 5 minutes
+        setInterval(loadData, 300000);
+
+        // CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, 20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, 0);
+                }
+            }
+            
+            @keyframes slideDown {
+                from {
+                    opacity: 1;
+                    transform: translate(-50%, 0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translate(-50%, 20px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initial load
+        loadData();
+    </script>
+</body>
+</html>
