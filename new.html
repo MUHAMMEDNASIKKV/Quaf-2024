@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - Upgraded</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for Socials -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #020617;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+        }
+
+        .stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center bottom, #172554 0%, #020617 70%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px; /* Essential for 3D parallax */
+        }
+
+        /* --- LOADING SCREEN --- */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020617;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(56, 189, 248, 0.2);
+            border-top-color: #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- BACKGROUND STARS --- */
+        .stars {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background-image: 
+                radial-gradient(1px 1px at 10% 10%, #fff, transparent),
+                radial-gradient(1px 1px at 20% 40%, #fff, transparent),
+                radial-gradient(1px 1px at 40% 20%, #fff, transparent),
+                radial-gradient(2px 2px at 60% 60%, #fff, transparent),
+                radial-gradient(1px 1px at 80% 80%, #fff, transparent),
+                radial-gradient(1px 1px at 50% 50%, #fff, transparent);
+            background-size: 550px 550px;
+            opacity: 0.3;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        /* --- SHOOTING STARS --- */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            animation: shoot 3s linear infinite;
+            opacity: 0;
+        }
+
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.8));
+            transform: translateX(-100px);
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0) rotate(-45deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(300px) translateY(300px) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- SPOTLIGHTS --- */
+        .beam-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .beam {
+            position: absolute;
+            top: -15%;
+            width: 120px;
+            height: 150%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 90%);
+            transform-origin: top center;
+            filter: blur(20px);
+            mix-blend-mode: screen;
+            /* Automatic swaying animation */
+            animation: sway 8s ease-in-out infinite alternate;
+        }
+
+        .beam-1 { left: 15%; animation-delay: 0s; transform: rotate(20deg); --base-rot: 20deg; }
+        .beam-2 { left: 30%; animation-delay: -2s; transform: rotate(10deg); --base-rot: 10deg; }
+        .beam-3 { right: 30%; animation-delay: -4s; transform: rotate(-10deg); --base-rot: -10deg; }
+        .beam-4 { right: 15%; animation-delay: -1s; transform: rotate(-20deg); --base-rot: -20deg; }
+
+        @keyframes sway {
+            0% { transform: rotate(var(--base-rot)) translateX(-10px) skewX(2deg); }
+            100% { transform: rotate(var(--base-rot)) translateX(10px) skewX(-2deg); }
+        }
+
+        /* --- 3D CONTENT WRAPPER --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out; /* Smooth follow */
+        }
+
+        /* --- TEXT --- */
+        .hero-text {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to bottom, #ffffff 10%, #94a3b8 50%, #cbd5e1 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.5));
+            animation: pulse-shine 4s infinite ease-in-out;
+        }
+
+        /* --- TYPING EFFECT --- */
+        .typing-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .typing-text::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 80%;
+            background: #38bdf8;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* --- CIRCULAR COUNTDOWN --- */
+        .countdown-container {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 90px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .time-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .time-box:hover::before {
+            opacity: 1;
+        }
+
+        .time-val {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .time-label {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px;
+            height: 110px;
+            z-index: 0;
+        }
+
+        .progress-ring__circle {
+            stroke: rgba(56, 189, 248, 0.2);
+            fill: transparent;
+            stroke-width: 3;
+        }
+
+        .progress-ring__progress {
+            stroke: #38bdf8;
+            fill: transparent;
+            stroke-width: 3;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+            border-radius: 4px;
+            width: 0%;
+            animation: fillProgress 2s ease-out forwards;
+        }
+
+        @keyframes fillProgress {
+            to { width: 65%; }
+        }
+
+        /* --- SUBSCRIBE FORM --- */
+        .subscribe-form {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(2, 6, 23, 0.6);
+            padding: 0.5rem;
+            border-radius: 999px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subscribe-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .subscribe-form:focus-within::before {
+            left: 100%;
+        }
+
+        .subscribe-form:focus-within {
+            border-color: rgba(56, 189, 248, 0.8);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+            transform: scale(1.02);
+        }
+
+        .subscribe-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .subscribe-input::placeholder {
+            color: #64748b;
+        }
+
+        .subscribe-btn {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subscribe-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .subscribe-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .subscribe-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        .subscribe-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- SUCCESS MESSAGE --- */
+        .success-message {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: top 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        .success-message.show {
+            top: 20px;
+        }
+
+        /* --- SOCIAL --- */
+        .socials {
+            margin-top: 4rem;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .social-link {
+            color: #64748b;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .social-link:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .social-link:hover {
+            color: #38bdf8;
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-5px) scale(1.1);
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+        }
+
+        /* --- TOGGLE BUTTON --- */
+        .toggle-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- PARTICLES --- */
+        .particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5;
+            background-image: radial-gradient(#ffffff 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.15;
+            animation: drift 15s linear infinite;
+        }
+
+        @keyframes drift {
+            from { background-position: 0 0; }
+            to { background-position: 0 100px; }
+        }
+
+        /* --- NEBULA EFFECT --- */
+        .nebula {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+            animation: float 20s infinite alternate ease-in-out;
+            z-index: 1;
+        }
+
+        .nebula-1 {
+            top: -200px;
+            left: -200px;
+        }
+
+        .nebula-2 {
+            bottom: -200px;
+            right: -200px;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+            100% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        @keyframes pulse-shine {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3)); }
+            50% { filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.6)); }
+        }
+
+        /* --- SOUND TOGGLE --- */
+        .sound-toggle {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- FAQ SECTION --- */
+        .faq-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .faq-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .faq-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .faq-content {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+
+        .faq-modal.show .faq-content {
+            transform: scale(1);
+        }
+
+        .faq-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .faq-question {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #38bdf8;
+        }
+
+        .faq-answer {
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+   
+
+    <div class="stage" id="stage">
+        <!-- Background Elements -->
+        <div class="stars"></div>
+        <div class="particles"></div>
+        
+        <!-- Nebula Effects -->
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        
+        <!-- Shooting Stars -->
+        <div class="shooting-star" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+        <div class="shooting-star" style="top: 40%; left: 30%; animation-delay: 3s;"></div>
+        <div class="shooting-star" style="top: 10%; left: 60%; animation-delay: 6s;"></div>
+
+        <!-- Light Beams (Separate from content so they don't move with mouse) -->
+        <div class="beam-container">
+            <div class="beam beam-1"></div>
+            <div class="beam beam-2"></div>
+            <div class="beam beam-3"></div>
+            <div class="beam beam-4"></div>
+        </div>
+
+        <!-- Main Content (Interactive Group) -->
+        <div class="content-wrapper" id="content">
+            
+            <div class="hero-text">
+                <h1 class="text-5xl md:text-8xl font-black uppercase text-gradient tracking-tight">Coming</h1>
+                <h1 class="text-5xl md:text-8xl font-black uppercase text-gradient tracking-tight typing-text" id="typingText">Soon</h1>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Project Completion</span>
+                    <span id="progressPercent">65%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="countdown-container">
+                <div class="time-box">
+                    <svg class="progress-ring" width="110" height="110">
+                        <circle class="progress-ring__circle" stroke-width="3" fill="transparent" r="52" cx="55" cy="55"></circle>
+                        <circle class="progress-ring__progress" id="days-progress" stroke-width="3" fill="transparent" r="52" cx="55" cy="55" stroke-dasharray="326.73" stroke-dashoffset="326.73"></circle>
+                    </svg>
+                    <span class="time-val" id="days">00</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-box">
+                    <svg class="progress-ring" width="110" height="110">
+                        <circle class="progress-ring__circle" stroke-width="3" fill="transparent" r="52" cx="55" cy="55"></circle>
+                        <circle class="progress-ring__progress" id="hours-progress" stroke-width="3" fill="transparent" r="52" cx="55" cy="55" stroke-dasharray="326.73" stroke-dashoffset="326.73"></circle>
+                    </svg>
+                    <span class="time-val" id="hours">00</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-box">
+                    <svg class="progress-ring" width="110" height="110">
+                        <circle class="progress-ring__circle" stroke-width="3" fill="transparent" r="52" cx="55" cy="55"></circle>
+                        <circle class="progress-ring__progress" id="minutes-progress" stroke-width="3" fill="transparent" r="52" cx="55" cy="55" stroke-dasharray="326.73" stroke-dashoffset="326.73"></circle>
+                    </svg>
+                    <span class="time-val" id="minutes">00</span>
+                    <span class="time-label">Mins</span>
+                </div>
+                <div class="time-box">
+                    <svg class="progress-ring" width="110" height="110">
+                        <circle class="progress-ring__circle" stroke-width="3" fill="transparent" r="52" cx="55" cy="55"></circle>
+                        <circle class="progress-ring__progress" id="seconds-progress" stroke-width="3" fill="transparent" r="52" cx="55" cy="55" stroke-dasharray="326.73" stroke-dashoffset="326.73"></circle>
+                    </svg>
+                    <span class="time-val" id="seconds">00</span>
+                    <span class="time-label">Secs</span>
+                </div>
+            </div>
+
+            <form class="subscribe-form" id="subscribeForm">
+                <input type="email" class="subscribe-input" id="emailInput" placeholder="Get notified when we launch..." required>
+                <button type="submit" class="subscribe-btn">Notify Me</button>
+            </form>
+
+            <div class="socials">
+                <a href="#" class="social-link"><i data-lucide="twitter"></i></a>
+                <a href="#" class="social-link"><i data-lucide="instagram"></i></a>
+                <a href="#" class="social-link"><i data-lucide="facebook"></i></a>
+                <a href="#" class="social-link"><i data-lucide="linkedin"></i></a>
+                <a href="#" class="social-link"><i data-lucide="github"></i></a>
+            </div>
+        </div>
+
+        <!-- Floor Reflection -->
+        <div class="floor-spot" style="
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 80vw; height: 20vh; background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+            pointer-events: none; z-index: 5; filter: blur(30px);
+        "></div>
+        
+        
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Hide loading screen after page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 1000);
+            }, 1500);
+        });
+
+        // --- Parallax Effect Logic ---
+        const stage = document.getElementById('stage');
+        const content = document.getElementById('content');
+        
+        stage.addEventListener('mousemove', (e) => {
+            // Calculate mouse position relative to center
+            const x = (window.innerWidth / 2 - e.pageX) / 40; // larger divisor = less movement
+            const y = (window.innerHeight / 2 - e.pageY) / 40;
+
+            // Apply rotation to content for 3D feel
+            content.style.transform = `rotateY(${x * -1}deg) rotateX(${y}deg)`;
+        });
+
+        // --- Countdown Timer Logic with Circular Progress ---
+        // Set date to 14 days from now for demo purposes
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 14); 
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Update text
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+            
+            // Update circular progress
+            const circumference = 2 * Math.PI * 52; // radius is 52
+            
+            // Days progress (max 30 days)
+            const daysOffset = circumference - (days / 30) * circumference;
+            document.getElementById('days-progress').style.strokeDashoffset = daysOffset;
+            
+            // Hours progress (max 24 hours)
+            const hoursOffset = circumference - (hours / 24) * circumference;
+            document.getElementById('hours-progress').style.strokeDashoffset = hoursOffset;
+            
+            // Minutes progress (max 60 minutes)
+            const minutesOffset = circumference - (minutes / 60) * circumference;
+            document.getElementById('minutes-progress').style.strokeDashoffset = minutesOffset;
+            
+            // Seconds progress (max 60 seconds)
+            const secondsOffset = circumference - (seconds / 60) * circumference;
+            document.getElementById('seconds-progress').style.strokeDashoffset = secondsOffset;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // --- Typing Effect ---
+        const typingText = document.getElementById('typingText');
+        const text = 'Soon';
+        let index = 0;
+        
+        function typeText() {
+            if (index < text.length) {
+                typingText.textContent = text.substring(0, index + 1);
+                index++;
+                setTimeout(typeText, 300);
+            } else {
+                // Reset and start again after a pause
+                setTimeout(() => {
+                    index = 0;
+                    typeText();
+                }, 3000);
+            }
+        }
+        
+        // Start typing effect after page loads
+        setTimeout(typeText, 2000);
+
+        // --- Progress Bar Animation ---
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        
+        // Animate progress bar on load
+        setTimeout(() => {
+            progressFill.style.width = '65%';
+            animateValue(progressPercent, 0, 65, 2000);
+        }, 1000);
+        
+        // Function to animate counter
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start) + '%';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- Theme Toggle ---
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        let isDarkMode = true;
+        
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            
+            if (isDarkMode) {
+                document.body.style.background = '#020617';
+                themeIcon.setAttribute('data-lucide', 'moon');
+                themeText.textContent = 'Dark Mode';
+            } else {
+                document.body.style.background = '#f8fafc';
+                themeIcon.setAttribute('data-lucide', 'sun');
+                themeText.textContent = 'Light Mode';
+            }
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        });
+
+        // --- Sound Toggle ---
+        const soundToggle = document.getElementById('soundToggle');
+        const soundIcon = document.getElementById('soundIcon');
+        let isSoundOn = true;
+        
+        soundToggle.addEventListener('click', () => {
+            isSoundOn = !isSoundOn;
+            
+            if (isSoundOn) {
+                soundIcon.setAttribute('data-lucide', 'volume-2');
+                // Add sound effect logic here
+            } else {
+                soundIcon.setAttribute('data-lucide', 'volume-x');
+                // Add sound effect logic here
+            }
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        });
+
+        // --- Subscribe Form ---
+        const subscribeForm = document.getElementById('subscribeForm');
+        const emailInput = document.getElementById('emailInput');
+        const successMessage = document.getElementById('successMessage');
+        
+        subscribeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Validate email
+            if (!emailInput.value || !emailInput.checkValidity()) {
+                emailInput.style.borderColor = 'red';
+                return;
+            }
+            
+            // Show success message
+            successMessage.classList.add('show');
+            
+            // Reset form
+            emailInput.value = '';
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+        });
+
+        // --- FAQ Modal ---
+        const faqBtn = document.getElementById('faqBtn');
+        const faqModal = document.getElementById('faqModal');
+        const faqClose = document.getElementById('faqClose');
+        
+        faqBtn.addEventListener('click', () => {
+            faqModal.classList.add('show');
+        });
+        
+        faqClose.addEventListener('click', () => {
+            faqModal.classList.remove('show');
+        });
+        
+        // Close modal when clicking outside
+        faqModal.addEventListener('click', (e) => {
+            if (e.target === faqModal) {
+                faqModal.classList.remove('show');
+            }
+        });
+
+        // --- Interactive Click Effects ---
+        document.addEventListener('click', (e) => {
+            // Create ripple effect on click
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            ripple.style.background = 'rgba(56, 189, 248, 0.5)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.left = `${e.clientX}px`;
+            ripple.style.top = `${e.clientY}px`;
+            ripple.style.animation = 'ripple 0.6s ease-out';
+            document.body.appendChild(ripple);
+            
+            // Remove ripple after animation
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+        
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    width: 200px;
+                    height: 200px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
