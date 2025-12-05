@@ -124,8 +124,8 @@
     }
       
     .btn {
-      margin: 50px;
-      padding: 20px 60px;
+      margin: 10px;
+      padding: 15px 40px;
       border: none;
       outline: none;
       color: #ffffff;
@@ -134,6 +134,7 @@
       z-index: 0;
       border-radius: 12px;
       font-weight: bold;
+      display: inline-block;
     }
     .btn::after {
       content: "";
@@ -380,10 +381,39 @@
     body.dark-mode .theme-toggle {
       color: #f0f0f0;
     }
+
+    /* Print styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .card-container, .card-container * {
+        visibility: visible;
+      }
+      .card-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .btn, .filter-container, .search-container, .theme-toggle, .back-to-top {
+        display: none !important;
+      }
+      .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .text-center.mb-3, .text-center.mb-4 {
+        visibility: visible;
+      }
+    }
   </style>
 </head>
 <body> 
-  
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </button>
+
   <div class="container-fluid px-3">
     <div class="text text-center mb-4">
       <span style="--i:1">Q</span>
@@ -886,7 +916,15 @@
   </div>
 
   <div class="text-center mt-4">
-    <button onclick="location.href='index.html'" type="button" class="btn">HOME</button>
+    <button onclick="location.href='index.html'" type="button" class="btn">
+      <i class="fas fa-home"></i> HOME
+    </button>
+    <button onclick="window.print()" type="button" class="btn">
+      <i class="fas fa-print"></i> PRINT
+    </button>
+    <button onclick="location.href='new.html'" type="button" class="btn">
+      <i class="fas fa-arrow-right"></i> NEXT COMMITTEE
+    </button>
   </div>
 
   <!-- Member Details Modal -->
