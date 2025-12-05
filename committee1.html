@@ -4,481 +4,1079 @@
   <title>QUAF-COMMITTEE 2025-26</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Responsive card container */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      justify-items: center;
+      align-items: start;
+      padding: 20px 0;
+    }
+
+    /* Ensure cards maintain their original styling */
+    .card {
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .card-img-container {
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .card-img-top {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-img-top {
+      transform: scale(1.05);
+    }
+
+    /* Center align card titles */
+    .card-title {
+      text-align: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .card-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .card {
+        width: 100% !important;
+        max-width: 300px;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .card-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .card-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .card-container {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Original styles preserved */
+    .text span {
+      font-size: 30px;
+      text-transform: uppercase;
+      color: #0000e6;
+      font-weight: bold;
+      animation: zoomup 2s linear;
+      animation-delay: calc(200ms * var(--i));
+      display: inline-block;
+    }
+
+    @keyframes zoomup {
+      0% {
+        color: #3366ff;
+        filter: blur(0px);
+        text-shadow: 0 0 10px #00c2ba, 0 0 20px #00c2ba, 0 0 30px #00c2ba,
+          0 0 40px #00c2ba, 0 0 60px #00c2ba, 0 0 80px #00c2ba, 0 0 100px #00c2ba,
+          0 0 120px #00c2ba;
+      }
+      
+      100% {
+        color: #00cc44;
+        filter: blur(0px);
+        text-shadow: 0 0 10px #00c2ba, 0 0 20px #00c2ba, 0 0 30px #00c2ba,
+          0 0 40px #00c2ba, 0 0 60px #00c2ba, 0 0 80px #00c2ba, 0 0 100px #00c2ba,
+          0 0 120px #00c2ba;
+      }
+
+      5%{
+        filter: blur(0);
+        color: #3366ff;
+        text-shadow: none;
+      }
+      
+      95% {
+        filter: blur(0);
+        color: #00cc44;
+        text-shadow: none;
+      }
+    }
+      
+    .btn {
+      margin: 50px;
+      padding: 20px 60px;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      cursor: pointer;
+      position: relative;
+      z-index: 0;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+    .btn::after {
+      content: "";
+      z-index: -1;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #918787;
+      left: 0;
+      top: 0;
+      border-radius: 10px;
+    }
+    /* glow */
+    .btn::before {
+      content: "";
+      background: linear-gradient(
+        45deg,
+        #FF0000, #FF7300, #FFFB00, #48FF00,
+        #00FFD5, #002BFF, #FF00C8, #FF0000
+      );
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      background-size: 600%;
+      z-index: -1;
+      width: calc(100% + 4px);
+      height:  calc(100% + 4px);
+      filter: blur(8px);
+      animation: glowing 20s linear infinite;
+      transition: opacity .3s ease-in-out;
+      border-radius: 10px;
+      opacity: 0;
+    }
+
+    @keyframes glowing {
+      0% {background-position: 0 0;}
+      50% {background-position: 400% 0;}
+      100% {background-position: 0 0;}
+    }
+
+    /* hover */
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn:active:after {
+      background: transparent;
+    }
+
+    .btn:active {
+      color: #000;
+      font-weight: bold;
+    }
+
+    .neon-text {
+     font-size: 16px;
+     color: #000;
+     text-align: center;
+     margin-top: 0;
+     text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff,
+      0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
+     animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+     from {
+       text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff,
+         0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
+     }
+     to {
+       text-shadow: 0 0 20px #3498db, 0 0 30px #3498db, 0 0 40px #3498db,
+         0 0 50px #3498db, 0 0 60px #3498db, 0 0 70px #3498db, 0 0 80px #3498db;
+     }
+    }
+
+    /* New styles for enhancements */
+    .filter-container {
+      margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .filter-btn {
+      padding: 8px 15px;
+      border: 1px solid #ddd;
+      background-color: #f8f9fa;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+
+    .search-container {
+      margin: 20px 0;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 25px;
+      border: 1px solid #ddd;
+      padding-left: 40px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    .member-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .modal-header {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .modal-header img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #007bff;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 50px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode .card {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode .neon-text {
+      color: #f0f0f0;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    body.dark-mode .theme-toggle {
+      color: #f0f0f0;
+    }
+  </style>
 </head>
 <body> 
- 
-<div class="container-fluid px-3">
-  <div class="text text-center mb-4">
-    <span style="--i:1">Q</span>
-    <span style="--i:2">U</span>
-    <span style="--i:3">A</span>
-    <span style="--i:4">F</span>
+  
+  <div class="container-fluid px-3">
+    <div class="text text-center mb-4">
+      <span style="--i:1">Q</span>
+      <span style="--i:2">U</span>
+      <span style="--i:3">A</span>
+      <span style="--i:4">F</span>
+    </div>
+    
+    <div class="text-center mb-3">
+      <p><strong>Qualitative Union For Academic Focus</strong></p>
+      <h3>2025-26 COMMITTEE</h3>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-container position-relative">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search committee members...">
+    </div>
+
+    <div class="filter-container" id="filterContainer">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="executive">Executive</button>
+      <button class="filter-btn" data-filter="editorial">Editorial</button>
+      <button class="filter-btn" data-filter="publications">Publications</button>
+      <button class="filter-btn" data-filter="language">Language Wings</button>
+      <button class="filter-btn" data-filter="media">Media</button>
+      <button class="filter-btn" data-filter="sigma">Sigma</button>
+      <button class="filter-btn" data-filter="art">Art</button>
+      <button class="filter-btn" data-filter="oration">Oration</button>
+      <button class="filter-btn" data-filter="gk">GK</button>
+      <button class="filter-btn" data-filter="library">Library</button>
+      <button class="filter-btn" data-filter="himaya">Himaya</button>
+    </div>
+
+    <div class="loading-spinner" id="loadingSpinner"></div>
+    
+    <div class="card-container" id="cardContainer">
+      <!-- Card for SADHAQATHULLA -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1010.jpg" alt="SADHAQATHULLA" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">SADHAQATHULLA</h4>
+          <p class="neon-text"><strong>President</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="SADHAQATHULLA" data-role="President" data-image="pic/pic/1010.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for FAHEEM -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/960.png" alt="FAHEEM" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">FAHEEM</h4>
+          <p class="neon-text"><strong>Secretary</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="FAHEEM" data-role="Secretary" data-image="pic/pic/960.png">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUSTHAFA -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1017.jpg" alt="MUSTHAFA" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUSTHAFA</h4>
+          <p class="neon-text"><strong>Treasurer</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUSTHAFA" data-role="Treasurer" data-image="pic/pic/1017.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for SAHL SHAN -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1009.jpg" alt="SAHL SHAN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">SAHL SHAN</h4>
+          <p class="neon-text"><strong>V. President</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="SAHL SHAN" data-role="V. President" data-image="pic/pic/1009.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for Anshad -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1005.jpg" alt="Anshad" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Anshad</h4>
+          <p class="neon-text"><strong>W. Secretary</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="Anshad" data-role="W. Secretary" data-image="pic/pic/1005.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUHAMMED ALI -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1003.jpg" alt="MUHAMMED ALI" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUHAMMED ALI</h4>
+          <p class="neon-text"><strong>Program Designer</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUHAMMED ALI" data-role="Program Designer" data-image="pic/pic/1003.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for HASHIM KH -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1012.jpg" alt="HASHIM KH" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HASHIM KH</h4>
+          <p class="neon-text"><strong>Executive Member</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HASHIM KH" data-role="Executive Member" data-image="pic/pic/1012.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for RABEEH -->
+      <div class="card" style="width:300px" data-category="executive">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/995.jpg" alt="RABEEH" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">RABEEH</h4>
+          <p class="neon-text"><strong>Executive Member</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="RABEEH" data-role="Executive Member" data-image="pic/pic/995.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+
+      <!-- Card for QASIM -->
+      <div class="card" style="width:300px" data-category="editorial">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/997.jpg" alt="QASIM" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">QASIM</h4>
+          <p class="neon-text"><strong>Editorial Board</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="QASIM" data-role="Editorial Board" data-image="pic/pic/997.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for SHAFEEQ -->
+      <div class="card" style="width:300px" data-category="editorial">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/996.jpg" alt="SHAFEEQ" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">SHAFEEQ</h4>
+          <p class="neon-text"><strong>Editorial Board</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="SHAFEEQ" data-role="Editorial Board" data-image="pic/pic/996.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+
+      <!-- Card for HASHIM V -->
+      <div class="card" style="width:300px" data-category="publications">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/998.jpg" alt="HASHIM V" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HASHIM V</h4>
+          <p class="neon-text"><strong>Publications</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HASHIM V" data-role="Publications" data-image="pic/pic/998.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for HADI V -->
+      <div class="card" style="width:300px" data-category="publications">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/988.JPG" alt="HADI V" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HADI V</h4>
+          <p class="neon-text"><strong>Publications</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HADI V" data-role="Publications" data-image="pic/pic/988.JPG">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for HAYYAN -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/989.jpg" alt="HAYYAN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HAYYAN</h4>
+          <p class="neon-text"><strong>Arabic Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HAYYAN" data-role="Arabic Wing" data-image="pic/pic/989.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for HAMDAN -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1002.jpg" alt="HAMDAN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HAMDAN</h4>
+          <p class="neon-text"><strong>Arabic Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HAMDAN" data-role="Arabic Wing" data-image="pic/pic/1002.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUHAMMED SAHL -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1011.jpg" alt="MUHAMMED SAHL" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUHAMMED SAHL</h4>
+          <p class="neon-text"><strong>Urdu Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUHAMMED SAHL" data-role="Urdu Wing" data-image="pic/pic/1011.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for RAMEES -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1019.jpg" alt="RAMEES" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">RAMEES</h4>
+          <p class="neon-text"><strong>Urdu Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="RAMEES" data-role="Urdu Wing" data-image="pic/pic/1019.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for YASEEN -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/986.jpg" alt="YASEEN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">YASEEN</h4>
+          <p class="neon-text"><strong>Malayalam Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="YASEEN" data-role="Malayalam Wing" data-image="pic/pic/986.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for LASIN -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/987.jpg" alt="LASIN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">LASIN</h4>
+          <p class="neon-text"><strong>Malayalam Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="LASIN" data-role="Malayalam Wing" data-image="pic/pic/987.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for SHAHAL -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/992.jpg" alt="SHAHAL" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">SHAHAL</h4>
+          <p class="neon-text"><strong>English Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="SHAHAL" data-role="English Wing" data-image="pic/pic/992.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for ABDUL HADI -->
+      <div class="card" style="width:300px" data-category="language">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1020.jpg" alt="ABDUL HADI" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">ABDUL HADI</h4>
+          <p class="neon-text"><strong>English Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="ABDUL HADI" data-role="English Wing" data-image="pic/pic/1020.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for ALI RAFI -->
+      <div class="card" style="width:300px" data-category="media">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1000.jpg" alt="ALI RAFI" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">ALI RAFI</h4>
+          <p class="neon-text"><strong>Media Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="ALI RAFI" data-role="Media Wing" data-image="pic/pic/1000.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUHAMMED ZIYAD -->
+      <div class="card" style="width:300px" data-category="media">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/991.jpg" alt="MUHAMMED ZIYAD" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUHAMMED ZIYAD</h4>
+          <p class="neon-text"><strong>Media Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUHAMMED ZIYAD" data-role="Media Wing" data-image="pic/pic/991.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUHAMMED RASIN -->
+      <div class="card" style="width:300px" data-category="sigma">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1015.jpg" alt="MUHAMMED RASIN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUHAMMED RASIN</h4>
+          <p class="neon-text"><strong>Sigma Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUHAMMED RASIN" data-role="Sigma Wing" data-image="pic/pic/1015.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUHAMMED SHAFIN -->
+      <div class="card" style="width:300px" data-category="sigma">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1018.jpg" alt="MUHAMMED SHAFIN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUHAMMED SHAFIN</h4>
+          <p class="neon-text"><strong>Sigma Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUHAMMED SHAFIN" data-role="Sigma Wing" data-image="pic/pic/1018.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for SHAFEEQ (Art Wing) -->
+      <div class="card" style="width:300px" data-category="art">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/996.jpg" alt="SHAFEEQ" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">SHAFEEQ</h4>
+          <p class="neon-text"><strong>Art Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="SHAFEEQ" data-role="Art Wing" data-image="pic/pic/996.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for AQIB -->
+      <div class="card" style="width:300px" data-category="art">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/993.jpg" alt="AQIB" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">AQIB</h4>
+          <p class="neon-text"><strong>Art Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="AQIB" data-role="Art Wing" data-image="pic/pic/993.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for RABEEH (Oration Wing) -->
+      <div class="card" style="width:300px" data-category="oration">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/995.jpg" alt="RABEEH" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">RABEEH</h4>
+          <p class="neon-text"><strong>Oration Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="RABEEH" data-role="Oration Wing" data-image="pic/pic/995.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+
+      <!-- Card for SINAN -->
+      <div class="card" style="width:300px" data-category="oration">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1001.jpg" alt="SINAN" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">SINAN</h4>
+          <p class="neon-text"><strong>Oration Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="SINAN" data-role="Oration Wing" data-image="pic/pic/1001.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+  
+      <!-- Card for HISHAM RAHMATULLAH -->
+      <div class="card" style="width:300px" data-category="gk">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1008.jpg" alt="HISHAM RAHMATULLAH" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HISHAM RAHMATULLAH</h4>
+          <p class="neon-text"><strong>GK Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HISHAM RAHMATULLAH" data-role="GK Wing" data-image="pic/pic/1008.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MUHAMMED ASLAM -->
+      <div class="card" style="width:300px" data-category="gk">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1016.jpg" alt="MUHAMMED ASLAM" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MUHAMMED ASLAM</h4>
+          <p class="neon-text"><strong>GK Wing</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MUHAMMED ASLAM" data-role="GK Wing" data-image="pic/pic/1016.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for HASHIM V (Library) -->
+      <div class="card" style="width:300px" data-category="library">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/998.jpg" alt="HASHIM V" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HASHIM V</h4>
+          <p class="neon-text"><strong>Library</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HASHIM V" data-role="Library" data-image="pic/pic/998.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for HADI V (Library) -->
+      <div class="card" style="width:300px" data-category="library">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/988.jpg" alt="HADI V" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">HADI V</h4>
+          <p class="neon-text"><strong>Library</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="HADI V" data-role="Library" data-image="pic/pic/988.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+      
+      <!-- Card for MISHAB -->
+      <div class="card" style="width:300px" data-category="himaya">
+        <div class="card-img-container">
+          <img class="card-img-top" src="pic/pic/1014.jpg" alt="MISHAB" style="width:100%">
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">MISHAB</h4>
+          <p class="neon-text"><strong>Himaya</strong></p>
+          <button class="btn btn-sm btn-outline-primary view-details" data-name="MISHAB" data-role="Himaya" data-image="pic/pic/1014.jpg">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+        </div>
+      </div> 
+    </div>
   </div>
-  
-  <div class="text-center mb-3">
-    <p><strong>Qualitative Union For Academic Focus</strong></p>
-    <h3>2025-26 COMMITTEE</h3>
+
+  <div class="text-center mt-4">
+    <button onclick="location.href='index.html'" type="button" class="btn">HOME</button>
   </div>
-  
-  <div class="card-container">
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1010.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">SADHAQATHULLA</h4>
-        <p class="neon-text"><strong>President</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/960.png" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">FAHEEM</h4>
-        <p class="neon-text"><strong>Secretry</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1017.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUSTHAFA</h4>
-        <p class="neon-text"><strong>Treasurer</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1009.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">SAHL SHAN</h4>
-        <p class="neon-text"><strong>V. President</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1005.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">Anshad</h4>
-        <p class="neon-text"><strong>W. Secretary</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1003.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUHAMMED ALI</h4>
-        <p class="neon-text"><strong>Program Designer</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1012.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HASHIM KH</h4>
-        <p class="neon-text"><strong>ogea</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/995.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">RABEEH</h4>
-        <p class="neon-text"><strong>ogea</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/997.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">QASIM</h4>
-        <p class="neon-text"><strong>Editorial Board</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/996.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">SHAFEEQ</h4>
-        <p class="neon-text"><strong>Editorial Board</strong></p>
-      </div>
-    </div> 
 
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/998.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HASHIM V</h4>
-        <p class="neon-text"><strong>publications</strong></p>
+  <!-- Member Details Modal -->
+  <div class="member-modal" id="memberModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeModal">&times;</span>
+      <div class="modal-header">
+        <img id="modalImage" src="" alt="">
       </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/988.JPG" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HADI V</h4>
-        <p class="neon-text"><strong>Publications</strong></p>
+      <div class="modal-body">
+        <h2 id="modalName"></h2>
+        <p id="modalRole" class="neon-text"></p>
+        <div id="modalDetails">
+          <p><strong>Email:</strong> <span id="modalEmail">example@quaf.org</span></p>
+          <p><strong>Phone:</strong> <span id="modalPhone">+1234567890</span></p>
+          <p><strong>Department:</strong> <span id="modalDepartment">Computer Science</span></p>
+          <p><strong>Bio:</strong> <span id="modalBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</span></p>
+        </div>
       </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/989.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HAYYAN</h4>
-        <p class="neon-text"><strong>Arabic Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1002.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HAMDAN</h4>
-        <p class="neon-text"><strong>Arabic Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1011.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUHAMMED SAHL</h4>
-        <p class="neon-text"><strong>Urdu Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1019.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">RAMEES</h4>
-        <p class="neon-text"><strong>Urdu Wing</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/986.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">YASEEN</h4>
-        <p class="neon-text"><strong>Malayalam Wing</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/987.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">LASIN</h4>
-        <p class="neon-text"><strong>Malayalam Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/992.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">SHAHAL</h4>
-        <p class="neon-text"><strong>English Wing</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1020.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">ABDUL HADI</h4>
-        <p class="neon-text"><strong>English Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1000.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">ALI RAFI</h4>
-        <p class="neon-text"><strong>Media Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/991.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUHAMMED ZIYAD</h4>
-        <p class="neon-text"><strong>Media Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1015.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUHAMMED RASIN</h4>
-        <p class="neon-text"><strong>Sigma Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1018.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUHAMMED SHAFIN</h4>
-        <p class="neon-text"><strong>Sigma Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/996.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">SHAFEEQ</h4>
-        <p class="neon-text"><strong>Art Wing</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/993.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">AQIB</h4>
-        <p class="neon-text"><strong>Art Wing</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/995.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">RABEEH</h4>
-        <p class="neon-text"><strong>Oration Wing</strong></p>
-      </div>
-    </div> 
-
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1001.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">SINAN</h4>
-        <p class="neon-text"><strong>Oration Wing</strong></p>
-      </div>
-    </div> 
-  
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1008.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HISHAM RAHMATULLAH</h4>
-        <p class="neon-text"><strong>GK Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1016.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MUHAMMED ASLAM</h4>
-        <p class="neon-text"><strong>GK Wing</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/998.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HASHIM V</h4>
-        <p class="neon-text"><strong>Libray</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/988.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">HADI V</h4>
-        <p class="neon-text"><strong>Libray</strong></p>
-      </div>
-    </div> 
-    
-    <div class="card" style="width:300px">
-      <img class="card-img-top" src="pic/pic/1014.jpg" alt="Card image" style="width:100%">
-      <div class="card-body">
-        <h4 class="card-title">MISHAB</h4>
-        <p class="neon-text"><strong>Himaya</strong></p>
-      </div>
-    </div> 
+    </div>
   </div>
-</div>
 
-<div class="text-center mt-4">
-  <button onclick="location.href='index.html'" type="button" class="btn">HOME</button>
-</div>
+  <!-- Back to Top Button -->
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
 
-<style> 
-/* Responsive card container */
-.card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  justify-items: center;
-  align-items: start;
-  padding: 20px 0;
-}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach(card => {
+        const name = card.querySelector('.card-title').textContent.toLowerCase();
+        const role = card.querySelector('.neon-text').textContent.toLowerCase();
+        
+        if (name.includes(searchTerm) || role.includes(searchTerm)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
 
-/* Ensure cards maintain their original styling */
-.card {
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .card-container {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .card {
-    width: 100% !important;
-    max-width: 300px;
-  }
-}
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        const filter = this.getAttribute('data-filter');
+        
+        // Show loading spinner
+        document.getElementById('loadingSpinner').style.display = 'block';
+        
+        // Simulate loading delay
+        setTimeout(() => {
+          cards.forEach(card => {
+            if (filter === 'all') {
+              card.style.display = '';
+            } else {
+              const category = card.getAttribute('data-category');
+              if (category === filter) {
+                card.style.display = '';
+              } else {
+                card.style.display = 'none';
+              }
+            }
+          });
+          
+          // Hide loading spinner
+          document.getElementById('loadingSpinner').style.display = 'none';
+        }, 300);
+      });
+    });
 
-@media (min-width: 769px) and (max-width: 1024px) {
-  .card-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+    // Modal functionality
+    const modal = document.getElementById('memberModal');
+    const viewDetailsButtons = document.querySelectorAll('.view-details');
+    const closeModalBtn = document.getElementById('closeModal');
+    
+    viewDetailsButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const name = this.getAttribute('data-name');
+        const role = this.getAttribute('data-role');
+        const image = this.getAttribute('data-image');
+        
+        // Set modal content
+        document.getElementById('modalName').textContent = name;
+        document.getElementById('modalRole').textContent = role;
+        document.getElementById('modalImage').src = image;
+        document.getElementById('modalImage').alt = name;
+        
+        // You could add more details here based on the member
+        // For now, using placeholder data
+        document.getElementById('modalEmail').textContent = `${name.toLowerCase().replace(' ', '.')}@quaf.org`;
+        document.getElementById('modalPhone').textContent = `+91 98765 43210`;
+        document.getElementById('modalDepartment').textContent = 'QUAF Department';
+        document.getElementById('modalBio').textContent = `${name} is a dedicated member of the QUAF committee serving as ${role}. With a passion for academic excellence and community service, ${name} brings valuable skills and experience to this role.`;
+        
+        // Show modal
+        modal.style.display = 'flex';
+      });
+    });
+    
+    closeModalBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
 
-@media (min-width: 1025px) {
-  .card-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
+    // Back to top functionality
+    const backToTopButton = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.add('visible');
+      } else {
+        backToTopButton.classList.remove('visible');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
 
-@media (min-width: 1400px) {
-  .card-container {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
+    // Dark mode toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const icon = themeToggle.querySelector('i');
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark-mode');
+      icon.classList.remove('fa-moon');
+      icon.classList.add('fa-sun');
+    }
+    
+    themeToggle.addEventListener('click', function() {
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'light');
+      }
+    });
 
-/* Original styles preserved */
-.text span {
-  font-size: 30px;
-  text-transform: uppercase;
-  color: #0000e6;
-  font-weight: bold;
-  animation: zoomup 2s linear ;
-  animation-delay: calc(200ms * var(--i));
-}
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        modal.style.display = 'none';
+      }
+    });
 
-@keyframes zoomup {
-  0% {
-    color: #3366ff;
-    filter: blur(0px);
-    text-shadow: 0 0 10px #00c2ba, 0 0 20px #00c2ba, 0 0 30px #00c2ba,
-      0 0 40px #00c2ba, 0 0 60px #00c2ba, 0 0 80px #00c2ba, 0 0 100px #00c2ba,
-      0 0 120px #00c2ba;
-  }
-  
-  100% {
-    color: #00cc44;
-    filter: blur(0px);
-    text-shadow: 0 0 10px #00c2ba, 0 0 20px #00c2ba, 0 0 30px #00c2ba,
-      0 0 40px #00c2ba, 0 0 60px #00c2ba, 0 0 80px #00c2ba, 0 0 100px #00c2ba,
-      0 0 120px #00c2ba;
-  }
-
-  5%{
-    filter: blur(0);
-    color: #3366ff;
-    text-shadow: none;
-  }
-  
-  95% {
-    filter: blur(0);
-    color: #00cc44;
-    text-shadow: none;
-  }
-}
-  
-.btn {
-  margin: 50px;
-  padding: 20px 60px;
-  border: none;
-  outline: none;
-  color: #ffffff;
-  cursor: pointer;
-  position: relative;
-  z-index: 0;
-  border-radius: 12px;
-  font-weight: bold;
-}
-.btn::after {
-  content: "";
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #918787;
-  left: 0;
-  top: 0;
-  border-radius: 10px;
-}
-/* glow */
-.btn::before {
-  content: "";
-  background: linear-gradient(
-    45deg,
-    #FF0000, #FF7300, #FFFB00, #48FF00,
-    #00FFD5, #002BFF, #FF00C8, #FF0000
-  );
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  background-size: 600%;
-  z-index: -1;
-  width: calc(100% + 4px);
-  height:  calc(100% + 4px);
-  filter: blur(8px);
-  animation: glowing 20s linear infinite;
-  transition: opacity .3s ease-in-out;
-  border-radius: 10px;
-  opacity: 0;
-}
-
-@keyframes glowing {
-  0% {background-position: 0 0;}
-  50% {background-position: 400% 0;}
-  100% {background-position: 0 0;}
-}
-
-/* hover */
-.btn:hover::before {
-  opacity: 1;
-}
-
-.btn:active:after {
-  background: transparent;
-}
-
-.btn:active {
-  color: #000;
-  font-weight: bold;
-}
-
-.neon-text {
- font-size: 16px;
- color: #000;
- text-align: center;
- margin-top: 0;
- text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff,
-   0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
- animation: glow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
- from {
-   text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff,
-     0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
- }
- to {
-   text-shadow: 0 0 20px #3498db, 0 0 30px #3498db, 0 0 40px #3498db,
-     0 0 50px #3498db, 0 0 60px #3498db, 0 0 70px #3498db, 0 0 80px #3498db;
- }
-}
-</style>
-
-<script> 
-document.getElementById("openModal").addEventListener("click", function () {
- document.getElementById("modal").style.display = "flex";
-});
-
-document.querySelector(".close").addEventListener("click", function () {
- document.getElementById("modal").style.display = "none";
-});
-</script>
-
+    // Lazy loading for images
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src || img.src;
+            imageObserver.unobserve(img);
+          }
+        });
+      });
+      
+      document.querySelectorAll('.card-img-top').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+  </script>
 </body>
 </html>
